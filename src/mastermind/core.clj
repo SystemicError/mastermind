@@ -54,7 +54,10 @@
         prompt (println (str "How many cows?"))
         cows (read-string (read-line))
         grade {:bulls bulls :cows cows}
-        filtered (filter #(= grade (grade-guess guess %)) guesses-remaining)
+        filtered (if (< cows 0)
+                   ; no cows given strongly suboptimal because best guess chosen assuming cows will be given
+                   (apply concat (for [x (range (count (first space)))] (filter #(= {:bulls bulls :cows x} (grade-guess guess %)) guesses-remaining)))
+                   (filter #(= grade (grade-guess guess %)) guesses-remaining))
         prompt (println (str (count filtered) " possibilities remain."))
         prompt (println (str (into [] filtered)))]
     (if (not= 1 (count filtered))
